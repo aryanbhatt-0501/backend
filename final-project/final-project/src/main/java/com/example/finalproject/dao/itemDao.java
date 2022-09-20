@@ -1,4 +1,4 @@
-package com.example.finalproject.dao;
+package com.cl.foodapp.dao;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,39 +6,31 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.example.finalproject.dto.item;
-import com.example.finalproject.repository.itemRepository;
+import com.cl.foodapp.entity.Item;
+import com.cl.foodapp.repository.ItemsRepository;
 
 @Repository
-public class itemDao {
-
-	@Autowired
-	itemRepository iRepo;
+public class ItemsDao {
 	
-	public item saveitem(item i) {
-		return iRepo.save(i);
-	}
-	public item updateitem(item i) {
-		return iRepo.save(i);
-	}
-	public List<item> getAllitem(){
-		return iRepo.findAll();
-	}
-	public item getitemById(int id) {
-		Optional<item> found=iRepo.findById(id);
-		if(found.isPresent()) {
-			return found.get();
-		}else {
-			return null;
+	@Autowired
+	ItemsRepository itemsRepository;
+		public Item saveItems(Item items) {
+			return itemsRepository.save(items);
 		}
-	}
-	public String deleteitem(int id) {
-		item i=getitemById(id);
-		if(i!=null) {
-			iRepo.delete(i);
-			return i.getName()+" item is deleted";
-		}else {
-			return "no item found";
+		public Optional<Item> getby(int id) {
+			return itemsRepository.findById(id);
 		}
-	}
+		public Item delete(int id) {
+			Item items=getby(id).get();
+			itemsRepository.delete(items);
+			return items;
+		}
+		public Item update(Item items, int id) {
+			items.setId(id);
+			return itemsRepository.save(items);
+		}
+		public List<Item> getall(){
+			return itemsRepository.findAll();
+		}
+
 }
