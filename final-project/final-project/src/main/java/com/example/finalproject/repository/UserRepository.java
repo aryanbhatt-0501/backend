@@ -1,12 +1,13 @@
-package com.example.finalproject.repository;
+package com.cl.foodapp.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.example.finalproject.dto.User;
+import com.cl.foodapp.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
 
-	public User findByEmailAndPassword(String mail, String password) ;
-		
+	public User findByEmailAndPassword(String email, String password);
+	
+	public User findByEmail(String email);
 	
 }
