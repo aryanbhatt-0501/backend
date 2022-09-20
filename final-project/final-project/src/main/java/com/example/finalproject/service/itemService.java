@@ -1,40 +1,82 @@
-package com.example.finalproject.service;
+package com.cl.foodapp.service;
 
-import java.util.List;
+import java.util.*;
+import java.util.Optional;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.example.finalproject.dao.FoodOrderDao;
-import com.example.finalproject.dao.itemDao;
-import com.example.finalproject.dto.FoodOrder;
-import com.example.finalproject.dto.item;
+import com.cl.foodapp.dao.FoodOrderDao;
+import com.cl.foodapp.dao.ItemsDao;
+
+import com.cl.foodapp.dao.UserDao;
+import com.cl.foodapp.entity.FoodOrder;
+import com.cl.foodapp.entity.Item;
+import com.cl.foodapp.responseStructure.ResponseStructure;
 
 @Service
-public class itemService {
-
+public class ItemsService {
+	
 	@Autowired
-	itemDao iDao;
+	ItemsDao itemsDao;
+	
+	@Autowired
+	UserDao userDao;
+	
 	@Autowired
 	FoodOrderDao foodOrderDao;
 	
-	public item saveitem(item i, int id) {
-		FoodOrder foodOrder=foodOrderDao.getFoodOrderById(id);
-		i.setFoodOrder(foodOrder);
-		return iDao.saveitem(i);
-	}
-	public item updateitem(item i, int id) {
-	FoodOrder foodOrder=foodOrderDao.getFoodOrderById(id);
-	i.setFoodOrder(foodOrder);
-		return iDao.updateitem(i);
-	}
-	public List<item> getAllitem(){
-		return iDao.getAllitem();
-	}
-	public item getitemById(int id) {
-		return iDao.getitemById(id);
-	}
-	public String deleteitem(int id) {
-		return iDao.deleteitem(id);
-	}
+			public ResponseEntity<ResponseStructure<Item>> saveitems(Item items){
+				ResponseStructure<Item> responseStructure = new ResponseStructure<>();
+				responseStructure.setMessage("Saved");
+				responseStructure.setStatuscode(HttpStatus.CREATED.value());
+				responseStructure.setT(itemsDao.saveItems(items));
+				return new ResponseEntity<ResponseStructure<Item>>(responseStructure,HttpStatus.CREATED);}
+			
+			public ResponseEntity<ResponseStructure<Item>> getby(int id){
+				Optional<Item> items=itemsDao.getby(id);
+				ResponseStructure<Item> responseStructure=new ResponseStructure<>();
+				if(items.isEmpty()) {
+					responseStructure.setMessage("Id not found");
+					responseStructure.setStatuscode(HttpStatus.NOT_FOUND.value());
+					return new ResponseEntity<ResponseStructure<Item>>(responseStructure,HttpStatus.NOT_FOUND);}
+				else {
+				responseStructure.setMessage("Saved");
+				responseStructure.setStatuscode(HttpStatus.OK.value());
+				responseStructure.setT(items.get());
+				return new ResponseEntity<ResponseStructure<Item>>(responseStructure,HttpStatus.OK);}}
+			public ResponseEntity<ResponseStructure<Item>> delete(int id){
+				Optional<Item> items=itemsDao.getby(id);
+				ResponseStructure<Item> responseStructure=new ResponseStructure<>();
+				if(items.isEmpty()) {
+					responseStructure.setMessage("Id not found");
+					responseStructure.setStatuscode(HttpStatus.NOT_FOUND.value());
+					return new ResponseEntity<ResponseStructure<Item>>(responseStructure,HttpStatus.NOT_FOUND);}
+				else {
+				responseStructure.setMessage("deleted");
+				responseStructure.setStatuscode(HttpStatus.OK.value());
+				responseStructure.setT(itemsDao.delete(id));
+				return new ResponseEntity<ResponseStructure<Item>>(responseStructure,HttpStatus.OK);}}
+			
+			public ResponseEntity<ResponseStructure<Item>> update(Item items,int id){
+				Optional<Item> items2=itemsDao.getby(id);
+				ResponseStructure<Item> responseStructure=new ResponseStructure<>();
+				if(items2.isEmpty()) {
+					responseStructure.setMessage("Id not found");
+					responseStructure.setStatuscode(HttpStatus.NOT_FOUND.value());
+					return new ResponseEntity<ResponseStructure<Item>>(responseStructure,HttpStatus.NOT_FOUND);}
+				else {
+				responseStructure.setMessage("Updated");
+				responseStructure.setStatuscode(HttpStatus.OK.value());
+				responseStructure.setT(itemsDao.update(items, id));
+				return new ResponseEntity<ResponseStructure<Item>>(responseStructure,HttpStatus.OK);}}
+			public ResponseEntity<ResponseStructure<List<Item>>> getall(){
+				ResponseStructure<List<Item>> responseStructure=new ResponseStructure<List<Item>>();
+				responseStructure.setMessage("Found");
+				responseStructure.setStatuscode(HttpStatus.OK.value());
+				responseStructure.setT(itemsDao.getall());
+				return new ResponseEntity<ResponseStructure<List<Item>>>(responseStructure, HttpStatus.OK);}
 }
