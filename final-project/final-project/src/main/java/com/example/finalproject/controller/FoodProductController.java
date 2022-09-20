@@ -1,8 +1,10 @@
-package com.example.finalproject.controller;
+package com.cl.foodapp.controller;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,33 +13,42 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.finalproject.dto.FoodProduct;
-import com.example.finalproject.service.FoodProductService;
+import com.cl.foodapp.entity.Products;
+import com.cl.foodapp.service.ProductsService;
+import com.cl.foodapp.responseStructure.ResponseStructure;
 
 @RestController
-public class FoodProductController {
-
-	@Autowired
-	FoodProductService foodProductService;
+@CrossOrigin(origins = "http://localhost:4200")
+public class ProductsControler {
 	
-	@PostMapping("/productsave/{menuId}")
-	public FoodProduct saveFoodProduct(@RequestBody FoodProduct foodProduct,@PathVariable int menuId) {
-		return foodProductService.saveFoodProduct(foodProduct,menuId);
+	@Autowired
+	ProductsService productsService;
+	
+	@PostMapping("/products")
+	public ResponseEntity<ResponseStructure<Products>> saveProducts(@RequestBody Products products){
+		return productsService.saveProducts(products);
 	}
-	@PutMapping("/productupdate/{menuId}")
-	public FoodProduct updateFoodProduct(@RequestBody FoodProduct foodProduct,@PathVariable int menuId) {
-		return foodProductService.updateFoodProduct(foodProduct, menuId);
+	
+	@GetMapping("/products/{id}")
+	public ResponseEntity<ResponseStructure<Products>> getby(@PathVariable int id){
+		return productsService.getby(id);
 	}
-	@GetMapping("/allproduct")
-	public List<FoodProduct> getAllFoodProducts(){
-		return foodProductService.getAllFoodProducts();
+	
+	@DeleteMapping("/deleteproducts/{id}")
+	public ResponseEntity<ResponseStructure<Products>> delete(@PathVariable int id){
+		return productsService.delete(id);
 	}
-	@GetMapping("/allproduct/{fpId}")
-	public FoodProduct getFoodProductById(@PathVariable int fpId) {
-		return foodProductService.getFoodProductById(fpId);
+	
+	@PutMapping("/updateproducts/{id}")
+	@CrossOrigin(origins = "http://localhost:4200")
+	public ResponseEntity<ResponseStructure<Products>> update(@RequestBody Products products,@PathVariable int id){
+		return productsService.update(products, id);
 	}
-	@DeleteMapping("/allproduct/{fpId}")
-	public String deleteFoodProduct(@PathVariable int fpId) {
-		return foodProductService.deleteFoodProduct(fpId);
+	
+	@GetMapping("/products")
+	@CrossOrigin(origins = "http://localhost:4200")
+	public ResponseEntity<ResponseStructure<List<Products>>> getall(){
+		return productsService.getall();
 	}
+
 }
