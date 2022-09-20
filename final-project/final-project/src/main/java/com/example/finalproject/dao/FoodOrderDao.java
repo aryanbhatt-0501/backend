@@ -1,49 +1,44 @@
-package com.example.finalproject.dao;
+package com.cl.foodapp.dao;
 
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
+import com.cl.foodapp.entity.FoodOrder;
+import com.cl.foodapp.repository.FoodOrderRepository;
 
-import com.example.finalproject.dto.FoodOrder;
-import com.example.finalproject.dto.Menu;
-import com.example.finalproject.repository.FoodOrderRepository;
-
-@Repository
+@Service
 public class FoodOrderDao {
-
 	
 	@Autowired
-	FoodOrderRepository foodOrderRepository;
-	
-	public FoodOrder saveFoodOrder(FoodOrder foodOrder){
-		return foodOrderRepository.save(foodOrder);
-	}
-	public FoodOrder updateFoodOrder(FoodOrder foodOrder) {
-		return foodOrderRepository.save(foodOrder);
-	}
-	public FoodOrder getFoodOrderById(int id) {
-		Optional <FoodOrder>found=foodOrderRepository.findById(id);
-		if(found.isPresent()) {
-			return found.get();
-		}else {
-			return null;
+	private FoodOrderRepository foodOrderRepository;
+		
+	public FoodOrder saveorders(FoodOrder orders) {
+			return foodOrderRepository.save(orders);
 		}
-	}
-	public List<FoodOrder> getAllFoodOrder(){
-		return foodOrderRepository.findAll();
-	}
-	public String deleteFoodProduct(int id) {
-		FoodOrder foodOrder=getFoodOrderById(id);
-		if(foodOrder!=null) {
-			foodOrderRepository.delete(foodOrder);
-			return foodOrder.getCustName()+" Food order is deleted";
-		}else {
-			return "no order found";
+		public Optional<FoodOrder> getby(int id) {
+			return foodOrderRepository.findById(id);
 		}
-	}
-	
-	
-	
+		public FoodOrder delete(int id) {
+			FoodOrder orders=getby(id).get();
+			foodOrderRepository.delete(orders);
+			return orders;
+		}
+		public FoodOrder update(FoodOrder orders, int id) {
+			orders.setId(id);
+			return foodOrderRepository.save(orders);
+		}
+		public List<FoodOrder> getall(){
+			return foodOrderRepository.findAll();
+		}
+		public FoodOrder getFoodOrderById(int id) {
+			Optional <FoodOrder>found=foodOrderRepository.findById(id);
+			if(found.isPresent()) {
+				return found.get();
+			}else {
+				return null;
+			}
+		}
+
 }
