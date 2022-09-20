@@ -1,43 +1,50 @@
-package com.example.finalproject.controller;
+package com.cl.foodapp.controller;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.finalproject.dto.item;
-import com.example.finalproject.service.itemService;
+import com.cl.foodapp.entity.Item;
+import com.cl.foodapp.service.ItemsService;
+import com.cl.foodapp.responseStructure.ResponseStructure;
 
 @RestController
-public class itemController {
-
-	@Autowired
-	itemService iService;
+public class ItemsController {
 	
-	@PostMapping("/itemsave/{foodOrderId}")
-	public item saveitem(@RequestBody item i, @PathVariable int foodOrderId) {
-		return iService.saveitem(i, foodOrderId);
+	@Autowired
+	private ItemsService itemsService;
+	@CrossOrigin(origins = "http://localhost:4200")
+	@PostMapping("/saveitems/{foodOrderId}")
+	public ResponseEntity<ResponseStructure<Item>> saveManager(@RequestBody Item items,@PathVariable int foodOrderId){
+		return itemsService.saveitems(items,foodOrderId);
 	}
-	@PutMapping("/itemupdate/{foodOrderId}")
-	public item updateitem(@RequestBody item i, @PathVariable int  foodOrderId) {
-		return iService.updateitem(i, foodOrderId);
+	
+	@GetMapping("/getitems/{id}")
+	public ResponseEntity<ResponseStructure<Item>> getby(@PathVariable int id){
+		return itemsService.getby(id);
 	}
-	@GetMapping("/allitems")
-	public List<item> getAllitem(){
-		return iService.getAllitem();
+	@CrossOrigin(origins = "http://localhost:4200")
+	@DeleteMapping("/deleteitems/{id}")
+	public ResponseEntity<ResponseStructure<Item>> delete(@PathVariable int id){
+		return itemsService.delete(id);
 	}
-	@GetMapping("/allitems/{itemid}")
-	public item getitemById(@PathVariable int itemid) {
-		return iService.getitemById(itemid);
+	@CrossOrigin(origins = "http://localhost:4200")
+	@PostMapping("/updateitems/{id}")
+	public ResponseEntity<ResponseStructure<Item>> update(@RequestBody Item items,@PathVariable int id){
+		return itemsService.update(items,id);
 	}
-	@DeleteMapping("/deleteitem/{itemid}")
-	public String deleteitem(@PathVariable int itemid) {
-		return iService.deleteitem(itemid);
+	@CrossOrigin(origins = "http://localhost:4200")
+	@GetMapping("/getitems")
+	public ResponseEntity<ResponseStructure<List<Item>>> getall(){
+		return itemsService.getall();
 	}
+
 }
