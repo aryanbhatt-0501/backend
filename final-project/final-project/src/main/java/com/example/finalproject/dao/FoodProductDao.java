@@ -1,4 +1,4 @@
-package com.example.finalproject.dao;
+package com.cl.foodapp.dao;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,39 +6,34 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.example.finalproject.dto.FoodProduct;
-import com.example.finalproject.repository.FoodProductRepository;
+import com.cl.foodapp.entity.Products;
+import com.cl.foodapp.repository.ProductsRepository;
 
 @Repository
-public class FoodProductDao {
+public class ProductDao {
 
 	@Autowired
-	FoodProductRepository foodProductRepository;
+	ProductsRepository productsRepository;
 	
-	public FoodProduct saveFoodProduct(FoodProduct foodProduct) {
-		return foodProductRepository.save(foodProduct);
+	public Products saveProducts(Products products) {
+		return productsRepository.save(products);
 	}
-	public FoodProduct updateFoodProduct(FoodProduct foodProduct) {
-		return foodProductRepository.save(foodProduct);
+	
+	public Optional<Products> getby(int id){
+		return productsRepository.findById(id);
 	}
-	public List<FoodProduct> getAllFoodProduct(){
-		return foodProductRepository.findAll();
+	
+	public Products delete(int id) {
+		Products products=getby(id).get();
+		productsRepository.delete(products);
+		return products;
 	}
-	public FoodProduct getFoodProductById(int id) {
-		Optional<FoodProduct> found=foodProductRepository.findById(id);
-		if(found.isPresent()) {
-			return found.get();			
-		}else {
-			return null;
-		}
+	public Products update(Products products, int id) {
+		products.setId(id);
+		return productsRepository.save(products);
 	}
-	public String deleteFoodProduct(int id) {
-		FoodProduct foodProduct=getFoodProductById(id);
-		if(foodProduct!=null) {
-			foodProductRepository.delete(foodProduct);
-			return foodProduct.getName()+" food product is deleted";
-		}else {
-			return "no food product found";
-		}
+	public List<Products> getall(){
+		return productsRepository.findAll();
 	}
+	
 }
